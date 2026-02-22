@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Salon & Reviews</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --black: #0a0a0a;
+            --grey: #1a1a1a;
+            --text: #f1f1f1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--black); color: var(--text); }
+
+        /* Header */
+        header { background: rgba(10,10,10,0.9); padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(212,175,55,0.2); }
+        .logo { font-size: 26px; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+        .book-btn { padding: 10px 20px; background: var(--gold); color: var(--black); font-weight: 800; text-decoration: none; border-radius: 5px; text-transform: uppercase; transition: 0.3s; }
+        .book-btn:hover { background: #fff; box-shadow: 0 0 15px var(--gold); }
+
+        .section-title { text-align: center; font-size: 35px; color: var(--gold); margin: 60px 0 30px; text-transform: uppercase; }
+
+        /* Review & Rating Section */
+        .reviews-section { padding: 40px 5%; background: var(--grey); border-top: 1px solid #333; border-bottom: 1px solid #333; }
+        .rating-summary { text-align: center; margin-bottom: 40px; }
+        .rating-summary h1 { font-size: 60px; color: var(--gold); }
+        .rating-summary p { color: #aaa; font-size: 16px; }
+
+        .review-container { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; }
+        
+        /* Write Review Form */
+        .write-review { background: var(--black); padding: 30px; border-radius: 15px; width: 100%; max-width: 450px; border: 1px solid rgba(212,175,55,0.3); }
+        .write-review h3 { margin-bottom: 15px; color: var(--gold); }
+        .star-rating { font-size: 35px; color: #444; cursor: pointer; margin-bottom: 15px; display: inline-block; }
+        .star-rating span { transition: 0.2s; }
+        .star-rating span:hover, .star-rating span.active { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        
+        .write-review input, .write-review textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #111; border: 1px solid #333; color: white; border-radius: 5px; outline: none; }
+        .write-review input:focus, .write-review textarea:focus { border-color: var(--gold); }
+        .write-review button { width: 100%; padding: 12px; background: var(--gold); color: var(--black); font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .write-review button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(212,175,55,0.4); }
+
+        /* Display Reviews */
+        .reviews-list { flex: 1; max-width: 600px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
+        .reviews-list::-webkit-scrollbar { width: 5px; }
+        .reviews-list::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 5px; }
+        
+        .review-card { background: var(--black); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--gold); }
+        .review-card h4 { display: flex; justify-content: space-between; align-items: center; color: var(--gold); margin-bottom: 10px; }
+        .review-card .stars { color: var(--gold); font-size: 18px; }
+        .review-card p { font-size: 14px; color: #ddd; line-height: 1.6; }
+
+        /* Booking Form */
+        .booking-section { padding: 60px 5%; max-width: 600px; margin: 0 auto; }
+        .booking-form { background: var(--grey); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--gold); }
+        .booking-form input, .booking-form select { width: 100%; padding: 15px; margin-bottom: 15px; background: var(--black); border: 1px solid #333; color: white; border-radius: 5px; font-size: 16px; }
+        .booking-form button { width: 100%; padding: 18px; background: #25D366; /* WhatsApp Green */ color: white; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .booking-form button:hover { background: #1EBE5D; transform: scale(1.02); }
+
+        /* Toast Message */
+        .toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--black); padding: 15px 30px; border-radius: 30px; font-weight: bold; transition: 0.4s; z-index: 1000; opacity: 0; }
+        .toast.show { bottom: 30px; opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">✂️ Lucifer Feedback & Booking </div>
+        <a href="#booking" class="book-btn">Book Now</a>
+    </header>
+
+    <section class="reviews-section" id="reviews">
+        <h2 class="section-title">Customer Feedback</h2>
+        
+        <div class="rating-summary">
+            <h1 id="averageRating">0.0</h1>
+            <p>⭐⭐⭐⭐⭐</p>
+            <p id="totalReviewsCount">Based on 0 reviews</p>
+        </div>
+
+        <div class="review-container">
+            <div class="write-review">
+                <h3>Rate Our Service</h3>
+                
+                <div class="star-rating" id="starRatingSelector">
+                    <span data-val="1">★</span>
+                    <span data-val="2">★</span>
+                    <span data-val="3">★</span>
+                    <span data-val="4">★</span>
+                    <span data-val="5">★</span>
+                </div>
+                <p id="ratingText" style="color: var(--gold); font-size: 14px; margin-bottom: 15px;">Click to rate</p>
+                
+                <form id="reviewForm">
+                    <input type="text" id="revName" placeholder="Your Name" required>
+                    <textarea id="revText" rows="4" placeholder="Share your experience with us..." required></textarea>
+                    <button type="submit">Submit Review</button>
+                </form>
+            </div>
+
+            <div class="reviews-list" id="reviewsList">
+                </div>
+        </div>
+    </section>
+
+    <section class="booking-section" id="booking">
+        <h2 class="section-title">Reserve VIP Slot</h2>
+        <form class="booking-form" id="bookingForm">
+            <input type="text" id="custName" placeholder="Full Name" required>
+            <input type="tel" id="custPhone" placeholder="Mobile Number" required>
+            <select id="serviceType" required>
+                <option value="" disabled selected>Select Service</option>
+                <option value="Haircut & Styling">Haircut & Styling (₹300)</option>
+                <option value="Beard Grooming">Beard Grooming (₹150)</option>
+                <option value="Hair Spa & Facial">Hair Spa & Facial (₹800)</option>
+                <option value="Hair Spa(₹300)">Hair Spa(₹300)</option>
+            </select>
+            <input type="datetime-local" id="bookDate" required>
+            <button type="submit">💬 Book via WhatsApp</button>
+        </form>
+    </section>
+
+    <div class="toast" id="toastMsg">Review Submitted Successfully!</div>
+
+    <script>
+        /* =========================================
+           1. STAR RATING SELECTION LOGIC
+        ========================================= */
+        let selectedRating = 0;
+        const stars = document.querySelectorAll('#starRatingSelector span');
+        const ratingText = document.getElementById('ratingText');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-val');
+                
+                // Remove active class from all
+                stars.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked star and all stars before it
+                stars.forEach(s => {
+                    if (s.getAttribute('data-val') <= selectedRating) {
+                        s.classList.add('active');
+                    }
+                });
+
+                let msgs = ["Poor 😞", "Fair 😐", "Good 🙂", "Very Good 😃", "Excellent 🤩"];
+                ratingText.innerText = msgs[selectedRating - 1];
+            });
+        });
+
+        /* =========================================
+           2. REVIEW SUBMIT & DISPLAY LOGIC (Local Storage)
+        ========================================= */
+        const reviewForm = document.getElementById('reviewForm');
+        const reviewsList = document.getElementById('reviewsList');
+        
+        // Load existing reviews from LocalStorage (browser memory)
+        let reviewsData = JSON.parse(localStorage.getItem('salonReviews')) || [];
+
+        function renderReviews() {
+            reviewsList.innerHTML = '';
+            let totalStars = 0;
+
+            if (reviewsData.length === 0) {
+                reviewsList.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">Be the first to leave a review!</p>';
+            }
+
+            // Show latest review at the top
+            reviewsData.slice().reverse().forEach(rev => {
+                totalStars += parseInt(rev.rating);
+                let starsHTML = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+                
+                let reviewCard = `
+                    <div class="review-card">
+                        <h4>${rev.name} <span class="stars">${starsHTML}</span></h4>
+                        <p>"${rev.text}"</p>
+                    </div>
+                `;
+                reviewsList.innerHTML += reviewCard;
+            });
+
+            // Update Average Score
+            if (reviewsData.length > 0) {
+                let avg = (totalStars / reviewsData.length).toFixed(1);
+                document.getElementById('averageRating').innerText = avg;
+                document.getElementById('totalReviewsCount').innerText = `Based on ${reviewsData.length} reviews`;
+            }
+        }
+
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (selectedRating === 0) {
+                alert("Please select a star rating first!");
+                return;
+            }
+
+            let newReview = {
+                name: document.getElementById('revName').value,
+                text: document.getElementById('revText').value,
+                rating: selectedRating
+            };
+
+            reviewsData.push(newReview);
+            localStorage.setItem('salonReviews', JSON.stringify(reviewsData)); // Save to memory
+            
+            renderReviews(); // Update screen
+            reviewForm.reset(); // Clear form
+            stars.forEach(s => s.classList.remove('active')); // Reset stars
+            selectedRating = 0;
+            ratingText.innerText = "Click to rate";
+
+            // Show Toast
+            let toast = document.getElementById('toastMsg');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        });
+
+        // Load reviews when page starts
+        renderReviews();
+
+        /* =========================================
+           3. WHATSAPP BOOKING LOGIC
+        ========================================= */
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let name = document.getElementById('custName').value;
+            let phone = document.getElementById('custPhone').value;
+            let service = document.getElementById('serviceType').value;
+            let date = document.getElementById('bookDate').value;
+
+            // Apna WhatsApp Number Yahan Daalein (Country Code ke sath)
+            let ownerNumber = "919358315220"; 
+
+            let message = `*📅 NEW BOOKING REQUEST*\n\n` +
+                          `👤 *Name:* ${name}\n` +
+                          `📞 *Phone:* ${phone}\n` +
+                          `✂️ *Service:* ${service}\n` +
+                          `🕒 *Time:* ${date.replace('T', ' at ')}\n\n` +
+                          `Please confirm my slot.`;
+
+            let whatsappURL = `https://wa.me/${ownerNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        });
+    </script>
+</body>
+</html>
