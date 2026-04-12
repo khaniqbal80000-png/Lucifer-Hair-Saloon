@@ -1,6 +1,6 @@
 const express = require('express');
 // HTML फाइल्स को सर्व करने के लिए
-app.use(express.static('public'));
+app.use(express.static('publice'));
 const cors = require('cors');
 const mongoose = require('mongoose'); // Naya tool database ke liye
 
