@@ -10,8 +10,6 @@ const app = express(); // 1. पहले app बनेगा
 // 2. फिर app काम करना शुरू करेगा
 // HTML फाइल्स को सर्व करने के लिए
 app.use(express.static('publice')); 
-app.use(express.json());
-app.use(cors());
 
 // 1. YAHAN APNI CHABI (LINK) DAALEIN 🔑
 // Niche wale link ko delete karke apna asli link paste karein aur password sahi se daalein
