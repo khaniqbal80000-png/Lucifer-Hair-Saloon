@@ -1,5 +1,3 @@
-
-const cors = require('cors');
 const mongoose = require('mongoose'); // Naya tool database ke liye
 
 app.use(express.json());
